@@ -14,6 +14,7 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 def resource_path(rel):
@@ -53,6 +54,8 @@ app = Flask(
     static_folder=str(resource_path("static")),
 )
 app.secret_key = os.environ.get("SECRET_KEY", "studyswap-dev-2026-ibmec")
+# Garante que url_for() gera URLs com https:// quando atrás do proxy do Render
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 
 # ── Database ─────────────────────────────────────────────
