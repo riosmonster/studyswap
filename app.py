@@ -42,7 +42,7 @@ SUBJECTS = [
     "Direito Empresarial", "Direito Civil",
     "Programação", "Banco de Dados",
     "Gestão de Projetos", "Empreendedorismo",
-    "Inglês", "Outro",
+    "Design Thinking", "Inglês", "Outro",
 ]
 
 MATERIAL_TYPES = ["Resumo", "Lista de Exercícios", "Mapa Mental", "Fichamento"]
@@ -526,18 +526,19 @@ def open_browser():
     webbrowser.open("http://localhost:5000")
 
 
+# Inicializa o banco sempre que o módulo é carregado
+# (funciona tanto com `python app.py` quanto com gunicorn no Render)
+init_db()
+
 if __name__ == "__main__":
-    init_db()
     print("=" * 46)
     print("  StudySwap rodando em http://localhost:5000")
     print("  Pressione Ctrl+C para encerrar")
     print("=" * 46)
     threading.Timer(0.8, open_browser).start()
-import os
-
-app.run(
-    host="0.0.0.0",
-    port=int(os.environ.get("PORT", 5000)),
-    debug=False,
-    use_reloader=False
-)
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 5000)),
+        debug=False,
+        use_reloader=False,
+    )
