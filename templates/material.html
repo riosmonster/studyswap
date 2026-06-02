@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}{{ mat['title'] }} · StudySwap{% endblock %}
+{% block content %}
+
+<div class="material-page">
+  <nav class="breadcrumb">
+    <a href="{{ url_for('marketplace') }}">Marketplace</a>
+    <span>›</span>
+    <span>{{ mat['subject'] }}</span>
+    <span>›</span>
+    <span>{{ mat['title'] }}</span>
+  </nav>
+
+  <div class="material-header">
+    <div class="material-tags">
+      <span class="subject-tag">{{ mat['subject'] }}</span>
+      <span class="type-tag">{{ mat['type'] }}</span>
+    </div>
+    <h1>{{ mat['title'] }}</h1>
+
+    <div class="material-meta-row">
+      <a href="{{ url_for('profile', uid=mat['author_id']) }}" class="author-chip">
+        <span class="avatar-sm">{{ mat['author_name'][0].upper() }}</span>
+        {{ mat['author_name'] }}
+      </a>
+      <span class="meta-sep">·</span>
+      <span class="credit-cost">◈ {{ mat['credits_cost'] }} créditos</span>
+      <span class="meta-sep">·</span>
+      <span class="avg-block">
+        {% if avg_rating['avg'] %}
+          {% set full = avg_rating['avg'] | int %}
+          <span class="stars-display">{% for i in range(full) %}★{% endfor %}{% for i in range(5 - full) %}☆{% endfor %}</span>
+          <span class="avg-num" id="avgNum">{{ avg_rating['avg'] }}</span>
+          <span class="rating-cnt" id="ratingCnt">({{ avg_rating['cnt'] }} avaliações)</span>
+        {% else %}
+          <span class="no-rating" id="avgNum">Sem avaliações ainda</span>
+        {% endif %}
+      </span>
+    </div>
+
+    {% if mat['description'] %}
+    <p class="material-desc">{{ mat['description'] }}</p>
+    {% endif %}
+  </div>
+
+  {% if has_access %}
+  <!-- ── Conteúdo liberado ── -->
+
+  {% if mat['file_path'] %}
+    {% set ext = mat['file_path'].rsplit('.', 1)[-1].lower() %}
+    {% if ext == 'pdf' %}
+    <div class="content-box file-content">
+      <div class="file-label">📄 Arquivo PDF</div>
+      <embed src="{{ url_for('serve_upload', filename=mat['file_path']) }}"
+             type="application/pdf"
+             class="pdf-embed">
+      <a href="{{ url_for('serve_upload', filename=mat['file_path']) }}"
+         class="btn btn-ghost btn-sm file-download" download target="_blank">
+        Baixar PDF
+      </a>
+    </div>
+    {% else %}
+    <div class="content-box file-content">
+      <div class="file-label">🖼 Imagem</div>
+      <img src="{{ url_for('serve_upload', filename=mat['file_path']) }}"
+           alt="{{ mat['title'] }}" class="material-img">
+      <a href="{{ url_for('serve_upload', filename=mat['file_path']) }}"
+         class="btn btn-ghost btn-sm file-download" download target="_blank">
+        Baixar imagem
+      </a>
+    </div>
+    {% endif %}
+  {% endif %}
+
+  {% if mat['content'] %}
+  <div class="content-box">
+    <pre class="material-content">{{ mat['content'] }}</pre>
+  </div>
+  {% endif %}
+
+  {% if not is_owner %}
+  <div class="rating-section" data-mat-id="{{ mat['id'] }}">
+    <h3>Avaliar este material</h3>
+    <div class="star-input" id="starInput" data-user-rating="{{ user_rating or 0 }}">
+      {% for i in range(1, 6) %}
+      <button type="button" class="star-btn" data-value="{{ i }}" aria-label="{{ i }} estrelas">★</button>
+      {% endfor %}
+    </div>
+    <p class="rating-msg" id="ratingMsg">
+      {% if user_rating %}Você avaliou com {{ user_rating }} estrela{{ 's' if user_rating > 1 }}.{% else %}Clique para avaliar.{% endif %}
+    </p>
+  </div>
+  {% endif %}
+
+  {% else %}
+  <!-- ── Conteúdo bloqueado ── -->
+  <div class="content-box locked">
+    {% if mat['file_path'] %}
+      {% set ext = mat['file_path'].rsplit('.', 1)[-1].lower() %}
+      {% if ext == 'pdf' %}
+      <div class="blurred-placeholder pdf-placeholder">📄 PDF — acesse para visualizar</div>
+      {% else %}
+      <div class="blurred-placeholder img-placeholder">🖼 Imagem — acesse para visualizar</div>
+      {% endif %}
+    {% else %}
+    <pre class="material-content blurred">{{ mat['content'][:300] }}{% if mat['content']|length > 300 %}…{% endif %}</pre>
+    {% endif %}
+
+    <div class="lock-overlay">
+      <div class="lock-card" id="lockCard">
+        <span class="lock-icon">🔒</span>
+        <p>Acesse este material por <strong>{{ mat['credits_cost'] }} créditos</strong></p>
+        <p class="muted">Você tem <strong>{{ current_user['credits'] }}</strong> créditos</p>
+        <button class="btn btn-primary btn-lg" id="accessBtn"
+                data-mat-id="{{ mat['id'] }}"
+                {% if current_user['credits'] < mat['credits_cost'] %}disabled{% endif %}>
+          {% if current_user['credits'] < mat['credits_cost'] %}
+            Créditos insuficientes
+          {% else %}
+            Desbloquear material
+          {% endif %}
+        </button>
+        {% if current_user['credits'] < mat['credits_cost'] %}
+        <p class="muted small">Publique materiais para ganhar mais créditos.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="material-footer">
+    <a href="{{ url_for('marketplace') }}" class="btn btn-ghost">← Voltar ao Marketplace</a>
+    {% if is_owner %}<span class="badge-own">Seu material</span>{% endif %}
+  </div>
+</div>
+
+{% endblock %}

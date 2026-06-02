@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Marketplace · StudySwap{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Marketplace</h1>
+  <a href="{{ url_for('upload') }}" class="btn btn-primary">+ Enviar material</a>
+</div>
+
+<!-- ── Barra de busca + filtros ── -->
+<form class="filter-form" method="GET" action="{{ url_for('marketplace') }}" id="filterForm">
+  <div class="filter-main">
+    <div class="search-wrap">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input name="q" type="search" class="search-input"
+             placeholder="Buscar por título, matéria ou autor…"
+             value="{{ search }}" autocomplete="off">
+    </div>
+
+    <select name="subject" class="filter-select" onchange="this.form.submit()">
+      <option value="">Todas as matérias</option>
+      {% for s in subjects %}
+      <option value="{{ s }}" {% if subject_filter == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="type" class="filter-select" onchange="this.form.submit()">
+      <option value="">Todos os tipos</option>
+      {% for t in material_types %}
+      <option value="{{ t }}" {% if type_filter == t %}selected{% endif %}>{{ t }}</option>
+      {% endfor %}
+    </select>
+
+    <button class="btn btn-primary" type="submit">Buscar</button>
+  </div>
+
+  <!-- Tags de filtro ativo -->
+  {% if subject_filter or type_filter or search %}
+  <div class="active-filters">
+    <span class="filter-label">Filtrando por:</span>
+    {% if search %}
+    <span class="active-tag">
+      "{{ search }}"
+      <a href="{{ url_for('marketplace', subject=subject_filter, type=type_filter) }}" class="tag-remove">✕</a>
+    </span>
+    {% endif %}
+    {% if subject_filter %}
+    <span class="active-tag">
+      {{ subject_filter }}
+      <a href="{{ url_for('marketplace', type=type_filter, q=search) }}" class="tag-remove">✕</a>
+    </span>
+    {% endif %}
+    {% if type_filter %}
+    <span class="active-tag">
+      {{ type_filter }}
+      <a href="{{ url_for('marketplace', subject=subject_filter, q=search) }}" class="tag-remove">✕</a>
+    </span>
+    {% endif %}
+    <a href="{{ url_for('marketplace') }}" class="clear-filters">Limpar tudo</a>
+  </div>
+  {% endif %}
+</form>
+
+<!-- ── Resultados ── -->
+{% if materials %}
+<p class="results-count">
+  {{ materials | length }} material{{ 'is' if materials | length != 1 else '' }} encontrado{{ 's' if materials | length != 1 else '' }}
+  {% if subject_filter %} em <strong>{{ subject_filter }}</strong>{% endif %}
+</p>
+
+<div class="materials-grid">
+  {% for m in materials %}
+  {% set is_own    = m['user_id'] == current_user['id'] %}
+  {% set has_access = m['id'] in accessed_ids or is_own %}
+  <article class="mat-card {% if has_access %}accessed{% endif %}">
+    <div class="mat-card-top">
+      <span class="subject-tag">{{ m['subject'] }}</span>
+      <span class="type-tag">{{ m['type'] }}</span>
+      {% if has_access and not is_own %}
+      <span class="accessed-badge">✓ Acessado</span>
+      {% endif %}
+    </div>
+
+    <h3><a href="{{ url_for('material', mid=m['id']) }}">{{ m['title'] }}</a></h3>
+
+    {% if m['description'] %}
+    <p class="mat-desc">{{ m['description'][:110] }}{% if m['description']|length > 110 %}…{% endif %}</p>
+    {% endif %}
+
+    <div class="mat-meta">
+      <a href="{{ url_for('profile', uid=m['user_id']) }}" class="author-link">
+        <span class="author-avatar">{{ m['author_name'][0].upper() }}</span>
+        {{ m['author_name'] }}
+      </a>
+      <span class="mat-stars">
+        {% if m['avg_rating'] %}
+          {% set full = m['avg_rating'] | int %}
+          <span class="stars-text">{% for i in range(full) %}★{% endfor %}{% for i in range(5 - full) %}☆{% endfor %}</span>
+          <span class="rating-num">{{ m['avg_rating'] }} ({{ m['rating_count'] }})</span>
+        {% else %}
+          <span class="no-rating">Sem avaliações</span>
+        {% endif %}
+      </span>
+    </div>
+
+    <div class="mat-card-foot">
+      {% if is_own %}
+        <span class="credit-cost own">Seu material</span>
+        <a href="{{ url_for('material', mid=m['id']) }}" class="btn btn-sm btn-ghost">Ver</a>
+      {% elif has_access %}
+        <span class="credit-cost accessed-cost">✓ Acessado</span>
+        <a href="{{ url_for('material', mid=m['id']) }}" class="btn btn-sm btn-ghost">Abrir</a>
+      {% else %}
+        <span class="credit-cost">◈ {{ m['credits_cost'] }} créditos</span>
+        <a href="{{ url_for('material', mid=m['id']) }}" class="btn btn-sm btn-primary">Acessar</a>
+      {% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-state">
+  <p class="empty-icon">📂</p>
+  <h3>Nenhum material encontrado</h3>
+  {% if subject_filter or type_filter or search %}
+  <p>Tente outros filtros ou remova a busca atual.</p>
+  <a href="{{ url_for('marketplace') }}" class="btn btn-ghost">Ver todos os materiais</a>
+  {% else %}
+  <p>Seja o primeiro a publicar um material!</p>
+  <a href="{{ url_for('upload') }}" class="btn btn-primary">Enviar material</a>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,14 @@
+services:
+  studyswap:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - studyswap-db:/app/data
+    environment:
+      - FLASK_ENV=production
+      - DATA_DIR=/app/data
+    restart: unless-stopped
+
+volumes:
+  studyswap-db:

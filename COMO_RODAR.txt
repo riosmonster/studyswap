@@ -1,0 +1,55 @@
+╔═══════════════════════════════════════════════════╗
+║              STUDYSWAP — COMO RODAR               ║
+╚═══════════════════════════════════════════════════╝
+
+═══════════════════════════════════════
+  OPÇÃO 1 — EXECUTÁVEL (mais fácil)
+  Não precisa instalar nada.
+═══════════════════════════════════════
+
+  Mac:
+    1. Abrir a pasta "dist"
+    2. Dar duplo clique em "StudySwap"
+       (ou rodar no terminal: ./dist/StudySwap)
+    3. O navegador abre sozinho em http://localhost:5000
+
+  Se o Mac bloquear o executável:
+    Preferências do Sistema → Privacidade e Segurança
+    → clicar em "Abrir assim mesmo"
+
+  Windows (recompilar na pasta build_windows):
+    Abrir iniciar.bat
+
+═══════════════════════════════════════
+  OPÇÃO 2 — DOCKER
+═══════════════════════════════════════
+
+  Pré-requisito: Docker Desktop instalado e aberto
+
+  1. Abrir o terminal nesta pasta
+  2. Rodar:
+       docker compose up --build
+  3. Abrir http://localhost:5000 no navegador
+  4. Para encerrar: Ctrl+C, depois docker compose down
+
+═══════════════════════════════════════
+  OPÇÃO 3 — PYTHON DIRETO
+═══════════════════════════════════════
+
+  Pré-requisito: Python 3.9+ instalado
+
+  Mac/Linux:
+    ./iniciar.sh
+
+  Windows:
+    iniciar.bat
+
+  Manual:
+    pip install flask
+    python app.py
+    Abrir http://localhost:5000
+
+╔═══════════════════════════════════════════════════╗
+║  Recomendado para apresentação: usar OPÇÃO 3       ║
+║  (Python direto com venv já configurado)           ║
+╚═══════════════════════════════════════════════════╝

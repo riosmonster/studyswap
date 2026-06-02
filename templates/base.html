@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}StudySwap{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav">
+      <!-- Logo -->
+      <a class="brand" href="{{ url_for('index') }}">
+        <span class="brand-mark">S</span>
+        <span>StudySwap</span>
+      </a>
+
+      {% if current_user %}
+      <!-- ── Usuário logado ── -->
+      <div class="nav-center">
+        <a href="{{ url_for('marketplace') }}"
+           class="nav-link {% if request.endpoint == 'marketplace' %}active{% endif %}">
+          Marketplace
+        </a>
+        <a href="{{ url_for('upload') }}"
+           class="nav-link {% if request.endpoint == 'upload' %}active{% endif %}">
+          Enviar Material
+        </a>
+      </div>
+
+      <div class="nav-right">
+        <span class="credits-badge" title="Seus créditos">
+          <span class="credits-icon">◈</span>
+          {{ current_user['credits'] }} créditos
+        </span>
+
+        <!-- Avatar + dropdown -->
+        <div class="user-menu" id="userMenu">
+          <button class="avatar-btn" id="avatarBtn" aria-expanded="false"
+                  title="{{ current_user['name'] }}">
+            {{ current_user['name'][0].upper() }}
+          </button>
+          <div class="user-dropdown" id="userDropdown" role="menu">
+            <div class="dropdown-header">
+              <strong>{{ current_user['name'] }}</strong>
+              <span>{{ current_user['email'] }}</span>
+            </div>
+            <a href="{{ url_for('own_profile') }}" role="menuitem">👤 Meu Perfil</a>
+            <a href="{{ url_for('marketplace') }}" role="menuitem">🏪 Marketplace</a>
+            <a href="{{ url_for('upload') }}" role="menuitem">📤 Enviar Material</a>
+            <div class="dropdown-divider"></div>
+            <a href="{{ url_for('logout') }}" class="dropdown-danger" role="menuitem">Sair</a>
+          </div>
+        </div>
+      </div>
+
+      {% else %}
+      <!-- ── Visitante ── -->
+      <div class="nav-right">
+        <a class="btn btn-ghost" href="{{ url_for('login') }}">Entrar</a>
+        <a class="btn btn-primary" href="{{ url_for('register') }}">Criar conta</a>
+      </div>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Layout: sidebars de anúncios só para usuários logados -->
+  <div class="{% if current_user %}page-wrapper{% endif %}">
+    {% if current_user %}
+    <aside class="ad-sidebar" aria-label="Anúncios">
+      <div class="ad-placeholder">
+        <span class="ad-icon">◻</span>
+        <span>Espaço publicitário</span>
+        <span class="ad-sub">Em breve</span>
+      </div>
+    </aside>
+    {% endif %}
+
+    <main class="{% if current_user %}page-main{% endif %}">
+      {% block content %}{% endblock %}
+    </main>
+
+    {% if current_user %}
+    <aside class="ad-sidebar" aria-label="Anúncios">
+      <div class="ad-placeholder">
+        <span class="ad-icon">◻</span>
+        <span>Espaço publicitário</span>
+        <span class="ad-sub">Em breve</span>
+      </div>
+    </aside>
+    {% endif %}
+  </div>
+
+  <footer class="footer">
+    <p>StudySwap © 2026 · Exclusivo para alunos IBMEC</p>
+    <p>Materiais compartilhados com responsabilidade.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

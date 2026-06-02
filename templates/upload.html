@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Enviar Material · StudySwap{% endblock %}
+{% block content %}
+
+<div class="form-page">
+  <div class="page-header">
+    <h1>Enviar Material</h1>
+    <p class="muted">Publique seu material e ganhe <strong>+20 créditos</strong>.</p>
+  </div>
+
+  <div class="rules-reminder">
+    <strong>Lembre-se:</strong> apenas resumos, listas de exercícios e materiais autorais.
+    Provas de professores, conteúdo copiado ou pago serão removidos.
+  </div>
+
+  <form method="POST" action="{{ url_for('upload') }}"
+        enctype="multipart/form-data" class="upload-form" id="uploadForm">
+
+    <div class="field">
+      <label for="title">Título <span class="required">*</span></label>
+      <input id="title" name="title" type="text"
+             placeholder="Ex: Resumo completo de Cálculo I – Derivadas" required>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="subject">Matéria <span class="required">*</span></label>
+        <select id="subject" name="subject" required>
+          <option value="" disabled selected>Selecione a matéria</option>
+          {% for s in subjects %}
+          <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="type">Tipo <span class="required">*</span></label>
+        <select id="type" name="type" required>
+          <option value="" disabled selected>Selecione o tipo</option>
+          {% for t in material_types %}
+          <option value="{{ t }}">{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="description">Descrição curta</label>
+      <input id="description" name="description" type="text"
+             placeholder="O que o aluno vai encontrar neste material?">
+    </div>
+
+    <!-- ── Área de arquivo ── -->
+    <div class="field">
+      <label>Arquivo <span class="label-note">(PDF, JPG ou PNG)</span></label>
+      <div class="file-drop-area" id="fileDropArea">
+        <input type="file" id="fileInput" name="file"
+               accept=".pdf,.jpg,.jpeg,.png,.gif,.webp"
+               class="file-input-hidden">
+        <div class="file-drop-content" id="fileDropContent">
+          <span class="file-drop-icon">📎</span>
+          <p><strong>Arraste um arquivo aqui</strong> ou <label for="fileInput" class="file-choose-link">clique para selecionar</label></p>
+          <p class="file-drop-hint">PDF, JPG ou PNG · máx. 16 MB</p>
+        </div>
+        <div class="file-preview-box" id="filePreviewBox" hidden>
+          <div class="file-preview-inner" id="filePreviewInner"></div>
+          <button type="button" class="file-remove-btn" id="fileRemoveBtn">✕ Remover arquivo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Conteúdo digitado (opcional se tiver arquivo) ── -->
+    <div class="field" id="contentField">
+      <label for="content">
+        Conteúdo digitado
+        <span class="label-note" id="contentNote">(obrigatório se não houver arquivo)</span>
+      </label>
+      <textarea id="content" name="content" rows="12"
+                placeholder="Cole ou digite o conteúdo do material aqui…"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="credits_cost">Custo de acesso em créditos <span class="required">*</span></label>
+      <div class="credits-input-row">
+        <input id="credits_cost" name="credits_cost" type="number"
+               min="10" value="10" class="credits-input">
+        <span class="field-hint">Mínimo 10 créditos. Defina mais se o material for completo e valioso.</span>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a href="{{ url_for('marketplace') }}" class="btn btn-ghost">Cancelar</a>
+      <button class="btn btn-primary" type="submit">Publicar material</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

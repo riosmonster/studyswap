@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}StudySwap | Troque conhecimento{% endblock %}
+{% block content %}
+
+<section class="hero section">
+  <div class="hero-content">
+    <p class="eyebrow">Exclusivo para alunos IBMEC</p>
+    <h1>Troque conhecimento. Ganhe créditos. Estude melhor.</h1>
+    <p class="hero-subtitle">
+      No StudySwap, alunos enviam resumos e listas de exercícios, ganham créditos
+      e usam esses créditos para acessar materiais compartilhados por outros estudantes.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Criar conta</a>
+      <a class="btn btn-secondary btn-lg" href="{{ url_for('login') }}">Já tenho conta</a>
+    </div>
+    <div class="trust-row">
+      <span>100% gratuito</span>
+      <span>Só alunos IBMEC</span>
+      <span>Sistema de créditos</span>
+    </div>
+  </div>
+
+  <div class="hero-panel">
+    <div class="panel-top">
+      <div>
+        <span class="mini-label">Seus créditos</span>
+        <strong>128</strong>
+      </div>
+      <span class="status-pill">IBMEC</span>
+    </div>
+    <article class="material-card featured">
+      <span class="subject-tag">Cálculo I</span>
+      <h2>Resumo de derivadas</h2>
+      <p>12 páginas revisadas por estudantes</p>
+      <div class="card-foot">
+        <div class="stars-display">★★★★☆ <span>4.2</span></div>
+        <button type="button" class="btn btn-primary btn-sm">Acessar</button>
+      </div>
+    </article>
+    <div class="mini-grid">
+      <article class="mini-card">
+        <span>Economia</span>
+        <strong>Lista resolvida</strong>
+      </article>
+      <article class="mini-card">
+        <span>Direito</span>
+        <strong>Mapa mental</strong>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section steps" id="como-funciona">
+  <div class="section-heading">
+    <p class="eyebrow">Como funciona</p>
+    <h2>Um ciclo simples para estudar mais e compartilhar melhor.</h2>
+  </div>
+  <div class="card-grid three">
+    <article class="info-card">
+      <span class="step-number">1</span>
+      <h3>Envie seu material</h3>
+      <p>Compartilhe resumos, listas de exercícios e materiais autorais.</p>
+    </article>
+    <article class="info-card">
+      <span class="step-number">2</span>
+      <h3>Ganhe créditos</h3>
+      <p>Cada material publicado gera +10 créditos para você usar.</p>
+    </article>
+    <article class="info-card">
+      <span class="step-number">3</span>
+      <h3>Acesse conteúdos</h3>
+      <p>Encontre materiais por disciplina e acesse com seus créditos.</p>
+    </article>
+  </div>
+</section>
+
+<section class="section rules" id="regras">
+  <div class="section-heading">
+    <p class="eyebrow">Regras de conteúdo</p>
+    <h2>Uma comunidade útil começa com materiais permitidos.</h2>
+  </div>
+  <div class="rules-grid">
+    <article class="rule-card accept">
+      <h3>O que aceitamos</h3>
+      <ul>
+        <li>Resumos</li>
+        <li>Listas de exercícios</li>
+        <li>Materiais autorais dos alunos</li>
+      </ul>
+    </article>
+    <article class="rule-card deny">
+      <h3>O que não aceitamos</h3>
+      <ul>
+        <li>Provas de professores</li>
+        <li>Conteúdo pago ou copiado</li>
+        <li>Materiais não autorizados</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section class="section cta-section">
+  <div class="cta-box">
+    <p class="eyebrow">Comece agora</p>
+    <h2>Pronto para estudar melhor?</h2>
+    <p>Crie sua conta com seu e-mail IBMEC e acesse o marketplace.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Criar conta gratuita</a>
+  </div>
+</section>
+
+{% endblock %}
