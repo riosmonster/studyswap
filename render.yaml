@@ -4,12 +4,8 @@ services:
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
-    disk:
-      name: studyswap-data
-      mountPath: /data
-      sizeGB: 1
     envVars:
       - key: DATA_DIR
-        value: /data
+        value: /tmp/studyswap
       - key: SECRET_KEY
         generateValue: true
