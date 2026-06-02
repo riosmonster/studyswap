@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}StudySwap{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=4">
 </head>
 <body>
 
@@ -76,9 +76,11 @@
     {% endif %}
   {% endwith %}
 
-  <!-- Layout: sidebars de anúncios só para usuários logados -->
-  <div class="{% if current_user %}page-wrapper{% endif %}">
-    {% if current_user %}
+  <!-- Sidebars de anúncios APENAS nas páginas internas (não na landing/login/cadastro) -->
+  {% set inner_page = request.endpoint in ('marketplace', 'upload', 'material', 'profile', 'own_profile', 'edit_profile') %}
+
+  <div class="{% if inner_page %}page-wrapper{% endif %}">
+    {% if inner_page %}
     <aside class="ad-sidebar" aria-label="Anúncios">
       <div class="ad-placeholder">
         <span class="ad-icon">◻</span>
@@ -88,11 +90,11 @@
     </aside>
     {% endif %}
 
-    <main class="{% if current_user %}page-main{% endif %}">
+    <main class="{% if inner_page %}page-main{% endif %}">
       {% block content %}{% endblock %}
     </main>
 
-    {% if current_user %}
+    {% if inner_page %}
     <aside class="ad-sidebar" aria-label="Anúncios">
       <div class="ad-placeholder">
         <span class="ad-icon">◻</span>
@@ -108,6 +110,6 @@
     <p>Materiais compartilhados com responsabilidade.</p>
   </footer>
 
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js') }}?v=4"></script>
 </body>
 </html>
