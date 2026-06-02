@@ -11,8 +11,12 @@
       e usam esses créditos para acessar materiais compartilhados por outros estudantes.
     </p>
     <div class="hero-actions">
+      {% if current_user %}
+      <a class="btn btn-primary btn-lg" href="{{ url_for('marketplace') }}">Ir para o Marketplace</a>
+      {% else %}
       <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Criar conta</a>
       <a class="btn btn-secondary btn-lg" href="{{ url_for('login') }}">Já tenho conta</a>
+      {% endif %}
     </div>
     <div class="trust-row">
       <span>100% gratuito</span>
@@ -105,7 +109,11 @@
     <p class="eyebrow">Comece agora</p>
     <h2>Pronto para estudar melhor?</h2>
     <p>Crie sua conta com seu e-mail IBMEC e acesse o marketplace.</p>
+    {% if current_user %}
+    <a class="btn btn-primary btn-lg" href="{{ url_for('marketplace') }}">Ir para o Marketplace</a>
+    {% else %}
     <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Criar conta gratuita</a>
+    {% endif %}
   </div>
 </section>
 
